@@ -106,6 +106,36 @@ func (Pipe) Default(ctx *context.Context) error {
 func doRun(ctx *context.Context, brew config.Homebrew, cl client.Client) error {
 	if brew.Tap.Name == "" {
 		return pipe.Skip("brew section is not configured")
+	} else {
+		name, err := tmpl.New(ctx).ApplySingleEnvOnly(brew.Tap.Name)
+		if err != nil {
+			return err
+		}
+		brew.Tap.Name = name
+	}
+
+	if brew.Tap.Owner != "" {
+		owner, err := tmpl.New(ctx).ApplySingleEnvOnly(brew.Tap.Owner)
+		if err != nil {
+			return err
+		}
+		brew.Tap.Owner = owner
+	}
+
+	if brew.CommitAuthor.Name != "" {
+		name, err := tmpl.New(ctx).ApplySingleEnvOnly(brew.CommitAuthor.Name)
+		if err != nil {
+			return err
+		}
+		brew.CommitAuthor.Name = name
+	}
+
+	if brew.CommitAuthor.Email != "" {
+		email, err := tmpl.New(ctx).ApplySingleEnvOnly(brew.CommitAuthor.Email)
+		if err != nil {
+			return err
+		}
+		brew.CommitAuthor.Email = email
 	}
 
 	if brew.Tap.Token != "" {
